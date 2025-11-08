@@ -175,12 +175,7 @@ def crawl_first_n_chapters(playwright, start_url, n=NUM_CHAPTERS):
 # ---------------- MAIN ----------------
 
 # ---------------- FLASK API ----------------
-
 app = Flask(__name__)
-
-@app.route("/")
-def home():
-    return "API is running. Use /crawl endpoint."
 
 @app.route("/crawl", methods=["GET"])
 def crawl_api():
@@ -189,7 +184,7 @@ def crawl_api():
     book_ids = get_book_ids(page_num)
     if not book_ids:
         return jsonify({"error": "Không tìm thấy book nào."}), 404
-  book_ids = book_ids[:5]
+
     results = []
     errors = []
     with sync_playwright() as p:
@@ -209,4 +204,3 @@ def crawl_api():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
