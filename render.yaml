@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: tadu-crawler-api
+    runtime: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "playwright install chromium && gunicorn app:app --bind 0.0.0.0:$PORT"
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
