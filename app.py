@@ -81,24 +81,6 @@ def crawl_book_info(book_id: str):
         if meta_img and meta_img.get("content"):
             img_url = meta_img.get("content")
 
-    # Tải ảnh về thư mục uploads chuẩn WP
-    local_img_path = ""
-    if img_url:
-        try:
-            img_resp = requests.get(img_url, headers=HEADERS, timeout=30)
-            img_resp.raise_for_status()
-            ext = os.path.splitext(img_url)[-1]
-            if not ext or len(ext) > 5:
-                ext = ".jpg"
-            filename = f"{book_id}{ext}"
-            uploads_dir = get_wp_uploads_dir()
-            local_img_path = str(uploads_dir / filename)
-            with open(local_img_path, "wb") as f:
-                f.write(img_resp.content)
-        except Exception as e:
-            print(f"  [Lỗi tải ảnh] {img_url}: {e}")
-            local_img_path = ""
-
     # Description
     intro_tag = soup.find("p", class_="intro")
     description = intro_tag.get_text("\n", strip=True) if intro_tag else ""
@@ -113,8 +95,7 @@ def crawl_book_info(book_id: str):
         "id": book_id,
         "title": title,
         "author": author,
-        "cover_image": img_url,
-        "cover_image_local": local_img_path.replace("\\", "/"),
+        "cover_image": img_url,  # chỉ trả về link
         "description": description,
         "genres": genres,
         "url": url
@@ -204,3 +185,4 @@ def crawl_api():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
+
